@@ -1,0 +1,7 @@
+SYS_AUTHOR = 'Keadin'
+SYS_GITHUB = '@KeadinZhou'
+DB_HOST = 'localhost'
+DB_USERNAME = 'root'
+DB_PASSWORD = 'Keadin'
+DB_NAME = 'netmusic'
+DB_CHATSET = 'utf8mb4'
