@@ -55,8 +55,38 @@ def getWords():
 
 @app.route('/words/<word>', methods=['GET'])
 def getSentence(word):
-    json = {'code': 200, 'data': {}}
-    json['data']['word'] = word
+    db = DBUtil.getConnection()
+    cursor = db.cursor()
+    GET_LIST_SQL = "SELECT song_id FROM res_word WHERE word=%s ORDER BY RAND() LIMIT 5"
+    GET_NAME_SQL = "SELECT song_name FROM song WHERE song_id=%s"
+    GET_SINGER_SQL = "SELECT singer_name FROM singer,singers_sing WHERE song_id=%s AND " \
+                     "singer.singer_id=singers_sing.singer_id "
+    GET_LRC_SQL = "SELECT lrc FROM res_lrc WHERE song_id=%s"
+    cursor.execute(GET_LIST_SQL, word)
+    res_list = cursor.fetchall()
+    json = {'code': 200, 'data': []}
+    for item in res_list:
+        song_id = item[0]
+        song_data = {'id': song_id}
+
+        cursor.execute(GET_NAME_SQL, song_id)
+        song_name = cursor.fetchone()[0]
+        song_data['name'] = song_name
+
+        cursor.execute(GET_SINGER_SQL, song_id)
+        singer_name = cursor.fetchone()[0]
+        song_data['singer'] = singer_name
+
+        cursor.execute(GET_LRC_SQL, song_id)
+        song_lrc = cursor.fetchone()[0]
+        song_lrc = song_lrc.split()
+        for lrc in song_lrc:
+            if word in lrc:
+                song_data['lrc'] = lrc
+                break
+
+        json['data'].append(song_data)
+
     return jsonify(json)
 
 
