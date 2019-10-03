@@ -16,14 +16,9 @@ def getGender():
     cursor.execute(sql)
     res = cursor.fetchall()
     json = {'code': 200, 'data': []}
+    gender = {1: '男', 2: '女', 0: '保密'}
     for item in res:
-        if int(item[0]) == 1:
-            name = '男'
-        elif int(item[0]) == 2:
-            name = '女'
-        else:
-            name = '保密'
-        json['data'].append({'gender': name, 'cnt': int(item[1])})
+        json['data'].append({'gender': gender[item[0]], 'cnt': int(item[1])})
     return jsonify(json)
 
 
