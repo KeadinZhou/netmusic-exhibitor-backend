@@ -1,5 +1,5 @@
 import pymysql
-import config
+from util import config
 
 
 def getConnection():
@@ -10,12 +10,17 @@ def getConnection():
                            charset=config.DB_CHATSET)
 
 
-def __test__():
+def connect():
     db = getConnection()
     cursor = db.cursor()
+    return db, cursor
+
+
+def __test__():
+    db, cursor = connect()
     sql = "SELECT * FROM %s.system" % config.DB_NAME
     cursor.execute(sql)
-    res = cursor.fetchone()
+    res = cursor.fetchall()
     print(res)
     db.close()
 
