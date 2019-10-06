@@ -3,7 +3,7 @@ from util import DBUtil
 
 
 def getWordsStat():
-    SQL = "SELECT word, cnt_sum FROM words_rank LIMIT 100"
+    SQL = "SELECT word, cnt_sum FROM words_rank ORDER BY cnt_sum DESC LIMIT 100"
     db, cursor = DBUtil.connect()
     cursor.execute(SQL)
     res = cursor.fetchall()

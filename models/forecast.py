@@ -1,3 +1,5 @@
+import random
+
 from util import DBUtil
 from functools import cmp_to_key
 
@@ -25,13 +27,21 @@ def cmpSortByValue(x, y):
 def calc(words):
     words.sort(key=cmp_to_key(cmpSortByValue))
     cnt = 0
-    value = 0
+    value_sum = 0
+    used_words = []
     for word in words:
         cnt += 1
         if cnt > 10:
             break
-        value += values.get(word, 0)
-    return value // cnt
+        value = values.get(word, 0)
+        value_sum += value
+        if value > 0:
+            used_words.append({
+                'word': word,
+                'value': value
+            })
+        random.shuffle(used_words)
+    return (value_sum // max(cnt, 1)), used_words
 
 
 if __name__ == '__main__':

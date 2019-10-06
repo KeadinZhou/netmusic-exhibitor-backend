@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import *
 
 from models import stat, sys, song, forecast
+from work import divRun
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -85,14 +86,16 @@ def api_forecast():
     if 'words' in json_data:
         words = json_data['words']
     elif 'lrc' in json_data:
-        words = json_data['lrc']
+        words = divRun.work(json_data['lrc'])
     else:
         return jsonify({
             'code': 400
         })
+    value, used_words = forecast.calc(words)
     return jsonify({
         'code': 200,
-        'value': forecast.calc(words)
+        'value': value,
+        'words': used_words
     })
 
 
