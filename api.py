@@ -1,14 +1,14 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import *
 
-from models import stat, sys, song
+from models import stat, sys, song, forecast
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
 
 @app.route('/', methods=['GET'])
-def about():
+def api_about():
     return jsonify({
         'code': 200,
         'data': sys.getAboutInfo()
@@ -16,7 +16,7 @@ def about():
 
 
 @app.route('/gender', methods=['GET'])
-def getGender():
+def api_gender():
     return jsonify({
         'code': 200,
         'data': stat.getGenderStat()
@@ -24,15 +24,39 @@ def getGender():
 
 
 @app.route('/province', methods=['GET'])
-def getProvince():
+def api_province():
     return jsonify({
         'code': 200,
         'data': stat.getProvinceStat()
     })
 
 
+@app.route('/ages', methods=['GET'])
+def api_ages():
+    return jsonify({
+        'code': 200,
+        'data': stat.getAgesStat()
+    })
+
+
+@app.route('/constellation', methods=['GET'])
+def api_constellation():
+    return jsonify({
+        'code': 200,
+        'data': stat.getConstellationStat()
+    })
+
+
+@app.route('/publish', methods=['GET'])
+def api_publish():
+    return jsonify({
+        'code': 200,
+        'data': stat.getPublishStat()
+    })
+
+
 @app.route('/words', methods=['GET'])
-def getWords():
+def api_words():
     return jsonify({
         'code': 200,
         'data': stat.getWordsStat()
@@ -40,10 +64,35 @@ def getWords():
 
 
 @app.route('/words/<word>', methods=['GET'])
-def getSentence(word):
+def api_sentence(word):
     return jsonify({
         'code': 200,
         'data': song.getLrcByWord(word)
+    })
+
+
+@app.route('/singer', methods=['GET'])
+def api_singer():
+    return jsonify({
+        'code': 200,
+        'data': song.getSingerRank()
+    })
+
+
+@app.route('/forecast', methods=['POST'])
+def api_forecast():
+    json_data = request.get_json()
+    if 'words' in json_data:
+        words = json_data['words']
+    elif 'lrc' in json_data:
+        words = json_data['lrc']
+    else:
+        return jsonify({
+            'code': 400
+        })
+    return jsonify({
+        'code': 200,
+        'value': forecast.calc(words)
     })
 
 

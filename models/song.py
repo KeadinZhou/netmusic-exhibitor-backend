@@ -36,3 +36,23 @@ def getLrcByWord(word):
         data.append(song_data)
 
     return data
+
+
+def getSingerRank():
+    SQL = "SELECT singer_id,singer_name,song_cnt,comment_cnt  FROM res_singer_rank ORDER BY comment_cnt DESC LIMIT 20"
+    db, cursor = DBUtil.connect()
+    cursor.execute(SQL)
+    res = cursor.fetchall()
+    data = list()
+    for item in res:
+        data.append({
+            'singer_id': int(item[0]),
+            'singer_name': item[1],
+            'song_cnt': int(item[2]),
+            'comment_cnt': int(item[3])
+        })
+    return data
+
+
+if __name__ == '__main__':
+    print(getSingerRank())
